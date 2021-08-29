@@ -22,7 +22,7 @@ import global.genesis.cross.CryptoWalletHttpClient;
 class CoinCapClientTest {
 
 	@InjectMocks
-	private CoinCapClient client;
+	private CoinCapClientImpl client;
 
 	@Mock
 	private CryptoWalletHttpClient cryptoWalletHttpClient;
