@@ -46,7 +46,7 @@ public class CalculateFinancialValueOfWalletUseCase {
 
 	private List<List<Callable<Wallet>>> partition(List<Wallet> wallets) {
 		var callables = new ArrayList<Callable<Wallet>>();
-		wallets.parallelStream().forEach(w -> callables.add(() -> w));
+		wallets.stream().forEach(w -> callables.add(() -> w));
 		return ListUtils.partition(callables, 3);
 	}
 
