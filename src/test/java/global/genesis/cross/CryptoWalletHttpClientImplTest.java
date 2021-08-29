@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import global.genesis.service.response.CoinCapAssetDataResponse;
 
-class CryptoWalletHttpClientTest {
+class CryptoWalletHttpClientImplTest {
 
 	@Test
 	void shouldCallAssetsUrl() throws URISyntaxException, IOException, InterruptedException {
-		var response = new CryptoWalletHttpClient().call("https://api.coincap.io/v2/assets?search=BTC",
+		var response = new CryptoWalletHttpClientImpl().call("https://api.coincap.io/v2/assets?search=BTC",
 				CoinCapAssetDataResponse.class);
 		assertNotNull(response);
 		assertNotNull(response.getData());

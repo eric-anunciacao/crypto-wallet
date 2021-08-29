@@ -11,8 +11,8 @@ import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import global.genesis.cross.CryptoWalletHttpClient;
-import global.genesis.service.CoinCapClient;
+import global.genesis.cross.CryptoWalletHttpClientImpl;
+import global.genesis.service.CoinCapClientImpl;
 import global.genesis.service.response.CoinCapAssetDataResponse;
 import global.genesis.service.response.CoinCapHistoryDataResponse;
 import global.genesis.utils.TestUtils;
@@ -24,13 +24,13 @@ class CalculateFinancialValueOfWalletUseCaseTest {
 	private static final String URL_GET_HISTORY = "https://api.coincap.io/v2/assets/%s/history?interval=d1&start=1617753600000&end=1617753601000";
 
 	@Mock
-	private CryptoWalletHttpClient cryptoWalletHttpClient;
+	private CryptoWalletHttpClientImpl cryptoWalletHttpClient;
 
 	@Test
 	void shouldCalculateFinancialValueOfWallet() throws URISyntaxException, IOException, InterruptedException {
 		mockObjects();
 
-		var coinCapClient = new CoinCapClient(cryptoWalletHttpClient);
+		var coinCapClient = new CoinCapClientImpl(cryptoWalletHttpClient);
 		var performance = new CalculateFinancialValueOfWalletUseCase(coinCapClient).execute();
 
 		assertEquals("total=16984.62, bestAsset=BTC, bestPerformance=1.51, worstAsset=ETH, worstPerformance=1.01",
