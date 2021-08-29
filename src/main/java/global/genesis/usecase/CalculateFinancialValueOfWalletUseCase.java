@@ -15,6 +15,7 @@ import global.genesis.cross.CSVUtils;
 import global.genesis.domain.entity.Performance;
 import global.genesis.domain.entity.Wallet;
 import global.genesis.domain.mapper.HistoryMapper;
+import global.genesis.infra.exception.CalculateFinancialValueException;
 import global.genesis.service.CoinCapClient;
 
 public class CalculateFinancialValueOfWalletUseCase {
@@ -35,12 +36,8 @@ public class CalculateFinancialValueOfWalletUseCase {
 	public Performance execute() {
 		LOGGER.log(Level.INFO, "Now is {0}", HOUR_PATTERN.format(LocalDateTime.now()));
 		var wallets = CSVUtils.load(FILENAME, Wallet.class);
-		return calculatePerformanceFrom(wallets);
-	}
-
-	private Performance calculatePerformanceFrom(List<Wallet> wallets) {
 		var partition = partition(wallets);
-		execute(partition);
+		run(partition);
 		return new Performance(wallets);
 	}
 
@@ -50,7 +47,7 @@ public class CalculateFinancialValueOfWalletUseCase {
 		return ListUtils.partition(callables, 3);
 	}
 
-	private void execute(List<List<Callable<Wallet>>> partition) {
+	private void run(List<List<Callable<Wallet>>> partition) {
 		var executor = Executors.newWorkStealingPool();
 		partition.parallelStream().forEach(callable -> {
 			try {
@@ -61,7 +58,7 @@ public class CalculateFinancialValueOfWalletUseCase {
 								new Object[] { wallet.getSymbol(), HOUR_PATTERN.format(LocalDateTime.now()) });
 						return wallet;
 					} catch (Exception e) {
-						throw new IllegalStateException(e);
+						throw new CalculateFinancialValueException(e);
 					}
 				}).forEach(this::loadAssetHistory);
 				LOGGER.log(Level.INFO, "(program hangs, waiting for some of the previous requests to finish)");
